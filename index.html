@@ -8,11 +8,19 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            position: relative;
+            overflow: hidden;
+            background-color: #000; /* Add a background color to make snowflakes visible */
+
+            /* white text color */
+            color: white;
         }
 
         .container {
             max-width: 400px;
             margin: auto;
+            position: relative;
+            z-index: 1;
         }
 
         input, button {
@@ -21,9 +29,19 @@
             margin: 10px 0;
             padding: 10px;
         }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
+<canvas id="snowCanvas"></canvas>
 <div class="container">
     <h1>Secret Santa</h1>
     <input type="text" id="name" placeholder="Enter your name">
@@ -81,6 +99,64 @@
 
     // Check the count of submitted names on page load
     window.onload = checkSubmittedNamesCount;
+
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const snowflakes = [];
+
+    function createSnowflakes() {
+        const numberOfSnowflakes = 100;
+        for (let i = 0; i < numberOfSnowflakes; i++) {
+            snowflakes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 4 + 1,
+                speed: Math.random() * 1 + 0.5,
+                wind: Math.random() * 2 - 1
+            });
+        }
+    }
+
+    function drawSnowflakes() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        for (const flake of snowflakes) {
+            ctx.moveTo(flake.x, flake.y);
+            ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+        moveSnowflakes();
+    }
+
+    function moveSnowflakes() {
+        for (const flake of snowflakes) {
+            flake.y += flake.speed;
+            flake.x += flake.wind;
+
+            if (flake.y > height) {
+                flake.y = 0;
+                flake.x = Math.random() * width;
+            }
+        }
+    }
+
+    function updateSnowfall() {
+        drawSnowflakes();
+        requestAnimationFrame(updateSnowfall);
+    }
+
+    createSnowflakes();
+    updateSnowfall();
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        createSnowflakes(); // Recreate snowflakes to fit new dimensions
+    });
 </script>
 </body>
 </html>
