@@ -1,11 +1,20 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
-
 const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+
 const db = new sqlite3.Database(':memory:');
 
+// Your existing routes and logic here
+
+
+
 const participants = ['elisa', 'fabian', 'ahmed', 'tuulia', 'karla', 'marc'];
+
+
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -60,9 +69,6 @@ app.get('/count', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
-});
 
 // Add a new endpoint to delete all submitted names
 app.post('/reset', (req, res) => {
@@ -72,4 +78,9 @@ app.post('/reset', (req, res) => {
         }
         res.json({ message: 'All names have been reset' });
     });
+});
+
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
