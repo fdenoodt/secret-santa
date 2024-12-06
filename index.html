@@ -4,36 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secret Santa</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: auto;
-        }
-        input, button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Secret Santa</h1>
-        <input type="text" id="name" placeholder="Enter the name of the person you give to">
+    <div>
+        <input type="text" id="name" placeholder="Enter your name">
         <button onclick="submitName()">Submit</button>
         <button id="revealButton" onclick="revealSecretSanta()" disabled>Who to give to?</button>
         <button onclick="resetNames()">Reset Names</button>
         <p id="result"></p>
     </div>
     <script>
-        const url = 'https://secret-santa-2nne.onrender.com'
+        const url = 'https://secret-santa-2nne.onrender.com';
+        const validNames = ['elisa', 'fabian', 'ahmed', 'tuulia', 'karla', 'marc'];
+
         async function submitName() {
             const name = document.getElementById('name').value;
+            if (!validNames.includes(name.toLowerCase())) {
+                document.getElementById('result').innerText = 'Invalid name';
+                return;
+            }
             const response = await fetch(`${url}/submit`, {
                 method: 'POST',
                 headers: {
