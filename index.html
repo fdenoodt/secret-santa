@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secret Santa</h1>
+        <input type="text" id="name" placeholder="Enter the name of the person you give to">
+        <button onclick="submitName()">Submit</button>
+        <button id="revealButton" onclick="revealSecretSanta()" disabled>Who to give to?</button>
+        <button onclick="resetNames()">Reset Names</button>
+        <p id="result"></p>
+    </div>
+    <script>
+        async function submitName() {
+            const name = document.getElementById('name').value;
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name })
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = result.message;
+            if (result.message === 'Name saved successfully') {
+                location.reload();
+            }
+        }
+
+        async function revealSecretSanta() {
+            const response = await fetch('/reveal');
+            const result = await response.json();
+            document.getElementById('result').innerText = result.message;
+        }
+
+        async function checkSubmittedNamesCount() {
+            const response = await fetch('/count');
+            const result = await response.json();
+            if (result.count >= 5) {
+                document.getElementById('revealButton').disabled = false;
+            }
+        }
+
+        async function resetNames() {
+            const response = await fetch('/reset', {
+                method: 'POST'
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = result.message;
+            location.reload();
+        }
+
+        // Check the count of submitted names on page load
+        window.onload = checkSubmittedNamesCount;
+    </script>
+</body>
+</html>
