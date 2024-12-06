@@ -1,20 +1,18 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const db = new sqlite3.Database(':memory:');
 
 // Your existing routes and logic here
 
-
-
 const participants = ['elisa', 'fabian', 'ahmed', 'tuulia', 'karla', 'marc'];
-
-
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -69,7 +67,6 @@ app.get('/count', (req, res) => {
     });
 });
 
-
 // Add a new endpoint to delete all submitted names
 app.post('/reset', (req, res) => {
     db.run("DELETE FROM secret_santa", [], (err) => {
@@ -79,7 +76,6 @@ app.post('/reset', (req, res) => {
         res.json({ message: 'All names have been reset' });
     });
 });
-
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
