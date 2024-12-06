@@ -31,9 +31,10 @@
         <p id="result"></p>
     </div>
     <script>
+        const url = 'https://secret-santa-2nne.onrender.com'
         async function submitName() {
             const name = document.getElementById('name').value;
-            const response = await fetch('/submit', {
+            const response = await fetch(`${url}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,13 +49,13 @@
         }
 
         async function revealSecretSanta() {
-            const response = await fetch('/reveal');
+            const response = await fetch(`${url}/reveal`);
             const result = await response.json();
             document.getElementById('result').innerText = result.message;
         }
 
         async function checkSubmittedNamesCount() {
-            const response = await fetch('/count');
+            const response = await fetch(`${url}/count`);
             const result = await response.json();
             if (result.count >= 5) {
                 document.getElementById('revealButton').disabled = false;
@@ -62,7 +63,7 @@
         }
 
         async function resetNames() {
-            const response = await fetch('/reset', {
+            const response = await fetch(`${url}/reset`, {
                 method: 'POST'
             });
             const result = await response.json();
