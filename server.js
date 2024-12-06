@@ -67,6 +67,17 @@ app.get('/count', (req, res) => {
     });
 });
 
+app.get('/names_submitted', (req, res) => {
+    db.all("SELECT name FROM secret_santa", [], (err, rows) => {
+        if (err) {
+            return res.json({ message: 'Error retrieving names' });
+        }
+        const names = rows.map(row => row.name);
+        res.json({ names });
+    });
+});
+
+
 // Add a new endpoint to delete all submitted names
 app.post('/reset', (req, res) => {
     db.run("DELETE FROM secret_santa", [], (err) => {
@@ -76,6 +87,7 @@ app.post('/reset', (req, res) => {
         res.json({ message: 'All names have been reset' });
     });
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
